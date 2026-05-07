@@ -1,5 +1,5 @@
 import { sendResponse } from "../../Hooks/responseHandler.js";
-import PlayerModel from "../../Models/Player.js";
+import PlayerModel from "../../Models/PlayerModels.js";
 import AdminModel from "../../Models/Admin.js";
 
 export const addCredits = async (req, res) => {

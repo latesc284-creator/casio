@@ -1,6 +1,6 @@
 import { sendResponse } from "../../Hooks/responseHandler.js";
 import AdmonModel from "../../Models/Admin.js";
-import PlayerModel from "../../Models/player.js";
+import PlayerModel from "../../Models/PlayerModels.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -9,7 +9,6 @@ export const createPlayer = async (req, res) => {
     const { UserName } = req.body;
     const idAdmin = req.user.id;
     const password = process.env.PASSWORD_PLAYER;
-   
 
     if (!idAdmin) return sendResponse(res, 400, "Admin not found");
 

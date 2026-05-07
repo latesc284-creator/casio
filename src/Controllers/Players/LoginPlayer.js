@@ -1,5 +1,5 @@
 import { sendResponse } from "../../Hooks/responseHandler.js";
-import PlayerModel from "../../Models/player.js";
+import PlayerModel from "../../Models/PlayerModels.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -37,7 +37,7 @@ export const loginPlayer = async (req, res) => {
       process.env.TOKEN_SECRET,
       {
         expiresIn: "7d",
-      }
+      },
     );
 
     // Guardar en cookie
@@ -54,7 +54,7 @@ export const loginPlayer = async (req, res) => {
         id: player._id,
         name: player.name,
       },
-    });    
+    });
   } catch (error) {
     console.error("Error en loginPlayer:", error);
     return sendResponse(res, 500, "Error logging in");

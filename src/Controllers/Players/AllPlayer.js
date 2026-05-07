@@ -1,5 +1,5 @@
 import { sendResponse } from "../../Hooks/responseHandler.js";
-import PlayerModel from "../../Models/Player.js";
+import PlayerModel from "../../Models/PlayerModels.js";
 
 export const AllPlayer = async (req, res) => {
   const idUser = req.user.id;
