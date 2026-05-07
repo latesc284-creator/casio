@@ -9,6 +9,11 @@ class PlayerModel {
     return await Player.findOne({ UserName });
   }
 
+  async searchId(id) {
+    return await Player.findById(id);
+  }
+
+
   async updateCredits(playerId, amount) {
     return await Player.findByIdAndUpdate(
       playerId,
