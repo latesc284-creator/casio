@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import AdminModel from "../Models/Admin.js";
-import PlayerModel from "../Models/player.js";
+import PlayerModel from "../Models/PlayerModels.js";
 
 export const verifyToken = async (req, res, next) => {
   try {
