@@ -1,18 +1,29 @@
-// ─── Controller: GET /api/ruleta/saldo ───────────────────────
-// Ruta auxiliar para que el front consulte el saldo actual
+import { sendResponse } from "../../../Hooks/responseHandler.js";
+import Players from "../../../Models/PlayerModels.js";
+
 export async function getSaldo(req, res) {
+  const idUser = req.user.id;
+  console.log(idUser);
+
   try {
-    const { userId } = req.query; // o req.user.id si viene del JWT
+    if (!idUser)
+      sendResponse(res, 401, "No autentificado", null, {
+        message: "No autentificado",
+      });
+   
+      const player = await Players.searchId(idUser);
 
-    const player = await Players.findById(userId).select("credits UserName status");
-    if (!player) return res.status(404).json({ error: "Jugador no encontrado" });
+      if (!player)
+        sendResponse(res, 404, "No encontrado", null, {
+          message: "No encontrado",
+        });
 
-    return res.status(200).json({
-      userId: player._id,
-      userName: player.UserName,
-      credits: player.credits,
-      status: player.status,
-    });
+        const saldo= {
+          creditos: player.credits
+        }
+         
+        sendResponse(res, 200, "Saldo correcto", saldo);
+
   } catch (error) {
     console.error("Error en getSaldo:", error);
     return res.status(500).json({ error: "Error interno del servidor" });

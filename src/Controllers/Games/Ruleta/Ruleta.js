@@ -5,21 +5,30 @@
 
 import Players from "../../../Models/PlayerModels.js"; // ajustá el path a tu modelo
 
-
 const HISTORIAL_LIMITE = 10;
 let historialGlobal = [];
 
 // ─── Constantes (igual que el front, pero acá son la verdad) ─
-const ROJOS = new Set([1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]);
+const ROJOS = new Set([
+  1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36,
+]);
 
 const ZONAS_VALIDAS = new Set([
   // Números individuales 0-36
   ...Array.from({ length: 37 }, (_, i) => String(i)),
   // Apuestas externas
-  "Rojo", "Negro", "PAR", "IMPAR",
-  "1-18", "19-36",
-  "1-12", "13-24", "25-36",
-  "COL1", "COL2", "COL3",
+  "Rojo",
+  "Negro",
+  "PAR",
+  "IMPAR",
+  "1-18",
+  "19-36",
+  "1-12",
+  "13-24",
+  "25-36",
+  "COL1",
+  "COL2",
+  "COL3",
 ]);
 
 // Multiplicadores por zona
@@ -36,25 +45,47 @@ function calcPremio(num, apuestas) {
     if (!isNaN(n) && zona === String(n)) {
       // Pleno (número exacto) — paga 35:1, o sea devuelve x36
       if (n === num) ganancia = monto * 36;
-
     } else if (num === 0) {
       // El 0 solo gana en pleno; todas las externas pierden
       ganancia = 0;
-
     } else {
       switch (zona) {
-        case "Rojo":   if (esRojo)                         ganancia = monto * 2; break;
-        case "Negro":  if (!esRojo)                        ganancia = monto * 2; break;
-        case "PAR":    if (num % 2 === 0)                  ganancia = monto * 2; break;
-        case "IMPAR":  if (num % 2 !== 0)                  ganancia = monto * 2; break;
-        case "1-18":   if (num >= 1  && num <= 18)         ganancia = monto * 2; break;
-        case "19-36":  if (num >= 19 && num <= 36)         ganancia = monto * 2; break;
-        case "1-12":   if (num >= 1  && num <= 12)         ganancia = monto * 3; break;
-        case "13-24":  if (num >= 13 && num <= 24)         ganancia = monto * 3; break;
-        case "25-36":  if (num >= 25 && num <= 36)         ganancia = monto * 3; break;
-        case "COL1":   if (num % 3 === 0)                  ganancia = monto * 3; break;
-        case "COL2":   if (num % 3 === 2)                  ganancia = monto * 3; break;
-        case "COL3":   if (num % 3 === 1)                  ganancia = monto * 3; break;
+        case "Rojo":
+          if (esRojo) ganancia = monto * 2;
+          break;
+        case "Negro":
+          if (!esRojo) ganancia = monto * 2;
+          break;
+        case "PAR":
+          if (num % 2 === 0) ganancia = monto * 2;
+          break;
+        case "IMPAR":
+          if (num % 2 !== 0) ganancia = monto * 2;
+          break;
+        case "1-18":
+          if (num >= 1 && num <= 18) ganancia = monto * 2;
+          break;
+        case "19-36":
+          if (num >= 19 && num <= 36) ganancia = monto * 2;
+          break;
+        case "1-12":
+          if (num >= 1 && num <= 12) ganancia = monto * 3;
+          break;
+        case "13-24":
+          if (num >= 13 && num <= 24) ganancia = monto * 3;
+          break;
+        case "25-36":
+          if (num >= 25 && num <= 36) ganancia = monto * 3;
+          break;
+        case "COL1":
+          if (num % 3 === 0) ganancia = monto * 3;
+          break;
+        case "COL2":
+          if (num % 3 === 2) ganancia = monto * 3;
+          break;
+        case "COL3":
+          if (num % 3 === 1) ganancia = monto * 3;
+          break;
       }
     }
 
@@ -66,9 +97,9 @@ function calcPremio(num, apuestas) {
 }
 
 // ─── Límites de apuesta (ajustá según tu negocio) ────────────
-const APUESTA_MIN = 1;
-const APUESTA_MAX_POR_ZONA = 5000; // máximo por zona individual
-const APUESTA_MAX_TOTAL = 5000;    // máximo total por tirada
+const APUESTA_MIN = 100;
+const APUESTA_MAX_POR_ZONA = 100000; // máximo por zona individual
+const APUESTA_MAX_TOTAL = 1000000; // máximo total por tirada
 
 // ─── Controller: POST /api/ruleta/girar ──────────────────────
 /**
@@ -87,10 +118,10 @@ export const girarRuleta = async (req, res) => {
     // 1. ── Extraer datos ──────────────────────────────────────
     // Si usás JWT, el userId debería venir del middleware de auth:
     // const userId = req.user.id;
-    const {  apuestas } = req.body;
+    const { apuestas } = req.body;
 
     const userId = req.user.id;
-    console.log(userId,"usuarios")
+    console.log(userId, "usuarios");
 
     if (!userId || !apuestas || typeof apuestas !== "object") {
       return res.status(400).json({ error: "Datos inválidos" });
@@ -108,17 +139,23 @@ export const girarRuleta = async (req, res) => {
         return res.status(400).json({ error: `Zona inválida: ${zona}` });
       }
       if (!Number.isInteger(monto) || monto < APUESTA_MIN) {
-        return res.status(400).json({ error: `Monto inválido en zona ${zona}` });
+        return res
+          .status(400)
+          .json({ error: `Monto inválido en zona ${zona}` });
       }
       if (monto > APUESTA_MAX_POR_ZONA) {
-        return res.status(400).json({ error: `Apuesta máxima por zona: ${APUESTA_MAX_POR_ZONA}` });
+        return res
+          .status(400)
+          .json({ error: `Apuesta máxima por zona: ${APUESTA_MAX_POR_ZONA}` });
       }
     }
 
     const totalApuesta = entradasApuestas.reduce((sum, [, m]) => sum + m, 0);
 
     if (totalApuesta > APUESTA_MAX_TOTAL) {
-      return res.status(400).json({ error: `Apuesta total máxima: ${APUESTA_MAX_TOTAL}` });
+      return res
+        .status(400)
+        .json({ error: `Apuesta total máxima: ${APUESTA_MAX_TOTAL}` });
     }
 
     // 3. ── Buscar el jugador ──────────────────────────────────
@@ -143,7 +180,6 @@ export const girarRuleta = async (req, res) => {
     // 5. ── Generar número ganador (EL BACK MANDA) ─────────────
     const numeroGanador = Math.floor(Math.random() * 37); // 0 al 36
 
-
     historialGlobal.unshift(numeroGanador);
     if (historialGlobal.length > HISTORIAL_LIMITE) historialGlobal.pop();
 
@@ -155,7 +191,6 @@ export const girarRuleta = async (req, res) => {
     const diferencia = totalPremio - totalApuesta; // puede ser negativo
 
     const playerActualizado = await Players.updateCredits(userId, diferencia);
-     
 
     // 8. ── Responder al front ─────────────────────────────────
     return res.status(200).json({
@@ -163,16 +198,14 @@ export const girarRuleta = async (req, res) => {
       apuestasRecibidas: apuestas,
       totalApuesta,
       totalPremio,
-      desglose,           
+      desglose,
       historial: historialGlobal,
       ganancia: diferencia,
       creditosAnteriores: player.credits,
       creditosActuales: playerActualizado.credits,
     });
-
   } catch (error) {
     console.error("Error en girarRuleta:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
-}
-
+};
