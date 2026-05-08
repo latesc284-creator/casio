@@ -13,7 +13,7 @@ const urlFront2 = process.env.URL_FRON2;
 
 app.use(
   cors({
-    origin: [urlFront, urlFront2],
+    origin: urlFront,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
