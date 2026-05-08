@@ -23,6 +23,9 @@ import AdminRoutes from "./src/Routes/AdminRoutes.js";
 
 import PlayerRoutes from "./src/Routes/PlayerRoutes.js";
 
+import RuletaRoutes from "./src/Routes/Ruleta.js";
+
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +34,7 @@ app.use(morgan("dev"));
 
 app.use("/api/v1/adminProtected", AdminRoutes);
 
-app.use("/api/v1/playerProtected", PlayerRoutes);
+app.use("/api/v1/playerProtected", PlayerRoutes , RuletaRoutes);
 
 app.get("/", (req, res) => {
   res.send("API running");
