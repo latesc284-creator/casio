@@ -9,10 +9,11 @@ import dbClient from "./src/Config/dbClinet.js";
 const app = express();
 
 const urlFront = process.env.URL_FRONT;
+const urlFront2 = process.env.URL_FRON2;
 
 app.use(
   cors({
-    origin: urlFront,
+    origin: [urlFront, urlFront2],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
