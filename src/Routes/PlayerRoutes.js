@@ -8,4 +8,7 @@ router.post("/login", PlayerController.loginPlayer);
 
 router.get("/data", verifyToken, PlayerController.dataUser);
 
+router.post("/change-password", verifyToken, PlayerController.updatePlayerPassword);
+
+
 export default router;

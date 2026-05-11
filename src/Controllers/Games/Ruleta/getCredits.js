@@ -3,7 +3,6 @@ import Players from "../../../Models/PlayerModels.js";
 
 export async function getSaldo(req, res) {
   const idUser = req.user.id;
-  console.log(idUser);
 
   try {
     if (!idUser)

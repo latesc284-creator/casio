@@ -16,7 +16,7 @@ export const loginPlayer = async (req, res) => {
 
     // Buscar player
     const player = await PlayerModel.exsitPlayer(UserName);
-    console.log(player);
+    
 
     if (!player) {
       return sendResponse(res, 400, "name or password incorrect");

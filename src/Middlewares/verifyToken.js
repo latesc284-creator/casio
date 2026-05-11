@@ -8,7 +8,7 @@ export const verifyToken = async (req, res, next) => {
     if (!token) return res.status(401).json({ message: "No hay token" });
 
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    console.log(decoded, "dsedsad");
+    ;
 
     // IMPORTANTE: Usamos decoded.id porque es lo que viene en tu token
     // Buscamos en ambas colecciones por ID

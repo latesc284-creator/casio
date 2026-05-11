@@ -7,7 +7,7 @@ export const removeCredits = async (req, res) => {
     const { UserName, amount } = req.body;
     const idAdmin = req.user.id;
 
-    console.log(UserName, amount);
+   
 
     if (!idAdmin) return sendResponse(res, 400, "Admin not found");
 
