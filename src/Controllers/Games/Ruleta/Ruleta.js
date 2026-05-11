@@ -31,7 +31,7 @@ const ZONAS_VALIDAS = new Set([
   "COL3",
 ]);
 
-const RIGGED_CHANCE = import.meta.env.RULETAPORSENTAJE
+const RIGGED_CHANCE = import.meta.RULETAPORSENTAJE
 // Multiplicadores por zona
 // El front ya tenía esta lógica, acá es la versión autoritativa
 function calcPremio(num, apuestas) {
