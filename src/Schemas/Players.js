@@ -19,6 +19,10 @@ const PlayersSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    changePassword :{
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       default: "user",

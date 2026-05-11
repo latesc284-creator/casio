@@ -13,7 +13,6 @@ class PlayerModel {
     return await Player.findById(id);
   }
 
-
   async updateCredits(playerId, amount) {
     return await Player.findByIdAndUpdate(
       playerId,
@@ -24,6 +23,12 @@ class PlayerModel {
 
   async getAllPlayers() {
     return await Player.find();
+  }
+  async changePassword(id, newPassword) {
+    return await Player.findByIdAndUpdate(id, {
+      password: newPassword,
+      changePassword: true,
+    });
   }
 }
 export default new PlayerModel();

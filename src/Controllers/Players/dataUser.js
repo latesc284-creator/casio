@@ -8,6 +8,7 @@ export const dataUser = async (req, res) => {
     if (!iduser) return sendResponse(res, 400, "Admin not found");
 
     const player = await PlayerModel.searchId(iduser);
+    console.log(player)
     if (!player) return sendResponse(res, 400, "Player not found");
 
 
@@ -15,6 +16,7 @@ export const dataUser = async (req, res) => {
         id: player._id,
         name: player.UserName,
         credits: player.credits,
+        password: player.changePassword,
      }
 
 

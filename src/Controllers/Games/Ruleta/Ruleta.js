@@ -31,6 +31,7 @@ const ZONAS_VALIDAS = new Set([
   "COL3",
 ]);
 
+const RIGGED_CHANCE = 30;
 // Multiplicadores por zona
 // El front ya tenía esta lógica, acá es la versión autoritativa
 function calcPremio(num, apuestas) {
@@ -121,7 +122,6 @@ export const girarRuleta = async (req, res) => {
     const { apuestas } = req.body;
 
     const userId = req.user.id;
-    console.log(userId, "usuarios");
 
     if (!userId || !apuestas || typeof apuestas !== "object") {
       return res.status(400).json({ error: "Datos inválidos" });
@@ -178,9 +178,36 @@ export const girarRuleta = async (req, res) => {
     }
 
     // 5. ── Generar número ganador (EL BACK MANDA) ─────────────
-    const numeroGanador = Math.floor(Math.random() * 37); // 0 al 36
+    let numeroGanador;
+    const debePerder = Math.random() * 100 < RIGGED_CHANCE;
 
+    if (debePerder) {
+      // Intentamos buscar un número que no dé premios
+      const numerosPosibles = Array.from({ length: 37 }, (_, i) => i);
+      // Mezclamos el array para que no siempre elija el mismo número perdedor
+      numerosPosibles.sort(() => Math.random() - 0.5);
+
+      // Buscamos el primer número de la lista que resulte en premio $0
+      const numeroPerdedorEncontrado = numerosPosibles.find((n) => {
+        const { totalPremio } = calcPremio(n, apuestas);
+        return totalPremio === 0;
+      });
+
+      // Si encontramos un número que lo hace perder, lo asignamos.
+      // Si el usuario apostó a TODO, numeroPerdedorEncontrado será undefined,
+      // en ese caso cae al azar normal (el casino no puede hacer magia si cubren todo).
+      numeroGanador =
+        numeroPerdedorEncontrado !== undefined
+          ? numeroPerdedorEncontrado
+          : Math.floor(Math.random() * 37);
+    } else {
+      // Azar puro (Fair play)
+      numeroGanador = Math.floor(Math.random() * 37);
+    }
+
+    // Guardar en historial
     historialGlobal.unshift(numeroGanador);
+
     if (historialGlobal.length > HISTORIAL_LIMITE) historialGlobal.pop();
 
     // 6. ── Calcular premio ────────────────────────────────────
